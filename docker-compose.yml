@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: recruitment_postgres
+    environment:
+      POSTGRES_USER: recruit_user
+      POSTGRES_PASSWORD: recruit_password
+      POSTGRES_DB: recruitment_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: recruitment_redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recruitment_backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend/app:/app/app
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://recruit_user:recruit_password@postgres:5432/recruitment_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=dev_jwt_secret_key_123!
+      - WEBHOOK_SHARED_SECRET=dev_webhook_secret_456!
+      - PUBLIC_BASE_URL=http://localhost:8000
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: recruitment_frontend
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

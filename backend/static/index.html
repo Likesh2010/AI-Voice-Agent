@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Voice Recruitment Dashboard</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;margin:20px}
+      table{border-collapse:collapse;width:100%}
+      th,td{border:1px solid #ddd;padding:8px}
+      th{background:#f4f4f4}
+    </style>
+  </head>
+  <body>
+    <h1>Voice Recruitment Dashboard</h1>
+    <section>
+      <h2>Recent Calls</h2>
+      <table id="calls-table"><thead><tr><th>ID</th><th>Candidate</th><th>Job</th><th>Status</th><th>Started</th></tr></thead><tbody></tbody></table>
+    </section>
+    <section>
+      <h2>Recent Reports</h2>
+      <table id="reports-table"><thead><tr><th>Call ID</th><th>Score</th><th>Category</th><th>Recommendation</th><th>Created</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <script>
+      async function loadCalls(){
+        const r = await fetch('/api/calls');
+        const data = await r.json();
+        const tbody = document.querySelector('#calls-table tbody');
+        tbody.innerHTML = '';
+        for(const c of data){
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${c.id}</td><td>${c.candidate_id}</td><td>${c.job_id}</td><td>${c.status}</td><td>${c.started_at||''}</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+      async function loadReports(){
+        const r = await fetch('/api/calls/reports');
+        const data = await r.json();
+        const tbody = document.querySelector('#reports-table tbody');
+        tbody.innerHTML = '';
+        for(const rep of data){
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${rep.call_id}</td><td>${rep.interest_score}</td><td>${rep.interest_category}</td><td>${rep.recommendation}</td><td>${rep.created_at}</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+      loadCalls(); loadReports();
+      setInterval(()=>{loadCalls(); loadReports();}, 5000);
+    </script>
+  </body>
+</html>
