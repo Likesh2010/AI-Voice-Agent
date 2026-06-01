@@ -38,26 +38,17 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, []);
 
-const handleCampaignAction = async (
-  id: number,
-  action: "start" | "pause" | "stop" | "resume"
-) => {
-  try {
-    if (action === "start") {
-      await api.startCampaign(id);
-    } else if (action === "resume") {
-      await api.startCampaign(id);
-    } else if (action === "pause") {
-      await api.pauseCampaign(id);
-    } else if (action === "stop") {
-      await api.stopCampaign(id);
+  const handleCampaignAction = async (id: number, action: "start" | "pause" | "stop") => {
+    try {
+      if (action === "start") await api.startCampaign(id);
+      else if (action === "pause") await api.pauseCampaign(id);
+      else if (action === "stop") await api.stopCampaign(id);
+      fetchDashboardData();
+    } catch (err: any) {
+      alert(err.message || `Failed to ${action} campaign`);
     }
+  };
 
-    fetchDashboardData();
-  } catch (err: any) {
-    alert(err.message || `Failed to ${action} campaign`);
-  }
-};
   if (loading) {
     return (
       <div className="flex h-[60vh] items-center justify-center text-slate-500 text-sm">

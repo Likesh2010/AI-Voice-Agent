@@ -28,26 +28,18 @@ export default function CampaignsListPage() {
   useEffect(() => {
     fetchCampaigns();
   }, []);
-  const handleCampaignAction = async (
-  id: number,
-  action: "start" | "pause" | "stop" | "resume"
-) => {
-  try {
-    if (action === "start") {
-      await api.startCampaign(id);
-    } else if (action === "resume") {
-      await api.startCampaign(id);
-    } else if (action === "pause") {
-      await api.pauseCampaign(id);
-    } else if (action === "stop") {
-      await api.stopCampaign(id);
-    }
 
-    fetchCampaigns();
-  } catch (err: any) {
-    alert(err.message || `Failed to ${action} campaign`);
-  }
-};
+  const handleCampaignAction = async (id: number, action: "start" | "pause" | "stop") => {
+    try {
+      if (action === "start") await api.startCampaign(id);
+      else if (action === "pause") await api.pauseCampaign(id);
+      else if (action === "stop") await api.stopCampaign(id);
+      fetchCampaigns();
+    } catch (err: any) {
+      alert(err.message || `Failed to ${action} campaign`);
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this campaign? This cannot be undone.")) return;
     try {
@@ -209,19 +201,13 @@ export default function CampaignsListPage() {
 
                 <div className="inline-flex gap-1.5">
                   {camp.status !== "active" ? (
-  <button
-    onClick={() =>
-      handleCampaignAction(
-        camp.id,
-        camp.status === "paused" ? "resume" : "start"
-      )
-    }
-    className="p-1.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 hover:bg-emerald-950/20 text-slate-400 hover:text-emerald-400 transition-all"
-    title="Launch"
-  >
-    <Play className="w-3.5 h-3.5 fill-current" />
-  </button>
-
+                    <button
+                      onClick={() => handleCampaignAction(camp.id, camp.status === "paused" ? "resume" : "start")}
+                      className="p-1.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 hover:bg-emerald-950/20 text-slate-400 hover:text-emerald-400 transition-all"
+                      title="Launch"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                    </button>
                   ) : (
                     <button
                       onClick={() => handleCampaignAction(camp.id, "pause")}
