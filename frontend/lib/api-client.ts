@@ -21,29 +21,37 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     options.body = options.formData;
   }
 
-  const response = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  try {
+    const response = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      headers,
+    });
 
-  if (!response.ok) {
-    let errorDetail = "An error occurred";
-    try {
-      const errorJson = await response.json();
-      errorDetail = errorJson.detail || errorDetail;
-    } catch {
-      // Fallback if not JSON
+    if (!response.ok) {
+      let errorDetail = "An error occurred";
+      try {
+        const errorJson = await response.json();
+        errorDetail = errorJson.detail || errorDetail;
+      } catch {
+        // Fallback if not JSON
+      }
+      throw new Error(errorDetail);
     }
-    throw new Error(errorDetail);
-  }
 
-  // Handle binary responses (e.g. downloads)
-  const contentType = response.headers.get("content-type");
-  if (contentType && (contentType.includes("application/pdf") || contentType.includes("text/csv") || contentType.includes("octet-stream"))) {
-    return response as any;
-  }
+    // Handle binary responses (e.g. downloads)
+    const contentType = response.headers.get("content-type");
+    if (contentType && (contentType.includes("application/pdf") || contentType.includes("text/csv") || contentType.includes("octet-stream"))) {
+      return response as any;
+    }
 
-  return response.json();
+    return response.json();
+  } catch (error: any) {
+    // Improve error message for network errors
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      throw new Error(`Failed to connect to server. Please check your internet connection and try again.`);
+    }
+    throw error;
+  }
 }
 
 export const api = {
