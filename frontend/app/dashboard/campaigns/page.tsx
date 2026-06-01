@@ -209,7 +209,7 @@ const handleCampaignAction = async (
                 <div className="inline-flex gap-1.5">
                   {camp.status !== "active" ? (
                     <button
-                      onClick={() => handleCampaignAction(camp.id, camp.status === "paused" ? "resume" : "start")}
+                      onClick={() => handleCampaignAction(camp.id, "start")}
                       className="p-1.5 rounded-lg border border-slate-800 hover:border-emerald-500/30 hover:bg-emerald-950/20 text-slate-400 hover:text-emerald-400 transition-all"
                       title="Launch"
                     >
