@@ -38,9 +38,10 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, []);
 
-  const handleCampaignAction = async (id: number, action: "start" | "pause" | "stop") => {
+  const handleCampaignAction = async (id: number, action: "start" | "pause" | "stop" | "resume") => {
     try {
       if (action === "start") await api.startCampaign(id);
+      else if (action === "resume") await api.startCampaign(id);
       else if (action === "pause") await api.pauseCampaign(id);
       else if (action === "stop") await api.stopCampaign(id);
       fetchDashboardData();
