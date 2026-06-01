@@ -28,12 +28,19 @@ export default function CampaignsListPage() {
   useEffect(() => {
     fetchCampaigns();
   }, []);
-
-  const handleCampaignAction = async (id: number, action: "start" | "pause" | "stop") => {
-    try {
-      if (action === "start") await api.startCampaign(id);
-      else if (action === "pause") await api.pauseCampaign(id);
-      else if (action === "stop") await api.stopCampaign(id);
+const handleCampaignAction = async (
+  id: number,
+  action: "start" | "pause" | "stop" | "resume"
+) =>  {
+    try {if (action === "start") {
+  await api.startCampaign(id);
+} else if (action === "resume") {
+  await api.startCampaign(id);
+} else if (action === "pause") {
+  await api.pauseCampaign(id);
+} else if (action === "stop") {
+  await api.stopCampaign(id);
+}
       fetchCampaigns();
     } catch (err: any) {
       alert(err.message || `Failed to ${action} campaign`);
