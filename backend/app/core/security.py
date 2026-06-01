@@ -4,8 +4,12 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from ..core.config import settings
 
-# Setup password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Setup password hashing - use pbkdf2 as fallback for bcrypt compatibility issues
+pwd_context = CryptContext(
+    schemes=["pbkdf2_sha256", "bcrypt"],
+    deprecated="auto",
+    pbkdf2_sha256__rounds=29000,
+)
 
 # JWT configuration variables (loaded from config or defaulted)
 JWT_SECRET_KEY = getattr(settings, "jwt_secret_key", "default_secret_key_speaking_agent_9933")
