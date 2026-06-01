@@ -1,4 +1,18 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://ai-voice-agent-l1x7.onrender.com";
+// Determine API base URL:
+// 1. Use NEXT_PUBLIC_API_URL environment variable if set (Vercel deployment)
+// 2. Use localhost:8000 if running on localhost (local development)
+// 3. Otherwise use deployed Render backend
+const BASE_URL = (() => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  
+  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+    return "http://localhost:8000";
+  }
+  
+  return "https://ai-voice-agent-l1x7.onrender.com";
+})();
 
 export interface RequestOptions extends RequestInit {
   json?: any;
