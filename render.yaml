@@ -1,10 +1,13 @@
 services:
-  # FastAPI Web Service
+  # FastAPI Backend Web Service
   - type: web
     name: speaking-agent-backend
     env: python
+    runtime: python-3.11
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    region: oregon
+    plan: free
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -18,15 +21,40 @@ services:
         generateValue: true
       - key: WEBHOOK_SHARED_SECRET
         generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false  # Set in Render dashboard
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_PHONE_NUMBER
+        sync: false
       - key: ENVIRONMENT
         value: production
+      - key: PUBLIC_BASE_URL
+        value: https://speaking-agent-backend.onrender.com
+
+  # Next.js Frontend Web Service (Optional)
+  - type: web
+    name: speaking-agent-frontend
+    env: node
+    runtime: node-20
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    region: oregon
+    plan: free
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://speaking-agent-backend.onrender.com/api
 
   # Redis Cache & Rate Limiting
   - type: redis
     name: speaking-agent-redis
     ipAllowList: [] # internal access only
+    plan: free
 
 databases:
   # PostgreSQL Database
   - name: speaking-agent-db
     plan: free
+    region: oregon

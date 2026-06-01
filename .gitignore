@@ -1,20 +1,49 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
 
 # Distribution / packaging
 build/
 dist/
+*.egg-info/
 
 # Virtual environments
 .venv/
 venv/
+ENV/
 
 # Local env files
+.env
+.env.local
+.env.*.local
 backend/.env
+frontend/.env.local
 
-# VSCode
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.next/
+out/
+dist/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+pgdata/
+
+# IDE
 .vscode/
+.idea/
+*.swp
+*.swo
 
-# Mac
+# OS
 .DS_Store
+Thumbs.db
+
+# Project
+static/reports/
+voice_recruitment.db
