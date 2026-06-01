@@ -103,5 +103,3 @@ export function useAuth() {
   }
   return context;
 }
-
-type strg = string;
