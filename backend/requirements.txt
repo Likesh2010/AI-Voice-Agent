@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic
+openai>=2.9.0
+python-dotenv
+twilio
+requests
+psycopg2-binary
+python-multipart
+pydantic-settings
+pyttsx3
+python-jose[cryptography]
+passlib[bcrypt]
+openpyxl
+reportlab
