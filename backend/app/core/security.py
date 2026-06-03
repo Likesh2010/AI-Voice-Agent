@@ -27,6 +27,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     """Hash the password securely."""
+    print(f"DEBUG HASHING - Value: {password}")
+    print(f"DEBUG HASHING - Type: {type(password)}")
+    print(f"DEBUG HASHING - Length: {len(password)}")
     return pwd_context.hash(password)
 
 
