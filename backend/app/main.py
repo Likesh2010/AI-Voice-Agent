@@ -12,6 +12,28 @@ from .core.config import settings
 
 app = FastAPI(title=settings.app_name)
 
+from fastapi import Request
+from fastapi.responses import JSONResponse
+import traceback
+
+@app.middleware("http")
+async def catch_exceptions_middleware(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        tb = traceback.format_exc()
+        headers = {
+            "Access-Control-Allow-Origin": request.headers.get("origin", "*"),
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "*",
+        }
+        return JSONResponse(
+            status_code=500,
+            content={"detail": str(e), "traceback": tb},
+            headers=headers
+        )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
